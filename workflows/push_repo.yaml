@@ -1,0 +1,24 @@
+apiVersion: argoproject.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: push-repo
+spec:
+  entrypoint: push-dag
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: pvc-data
+  templates:
+  - name: push-repo
+    container: 
+      image: toddchaney/car_insurance_push_repo
+      command: [bash]
+      args: ["/run.sh"]
+      volumeMounts:
+      - mountPath: /data
+        name: workspace
+  - name: push-dag
+    dag:
+      tasks:
+      - name: push-repo
+        template: push-repo

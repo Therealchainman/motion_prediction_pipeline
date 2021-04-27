@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: infer
+spec:
+  entrypoint: infer-dag
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: pvc-data
+  arguments:
+    parameters:
+    - name: model
+      value: LR
+  templates:
+  - name: infer
+    inputs:
+      parameters:
+      - name: model
+    container: 
+      image: toddchaney/car_insurance_infer
+      command: [python]
+      args: ["run.py"]
+      volumeMounts:
+      - mountPath: /data
+        name: workspace
+  - name: infer-dag
+    dag:
+      tasks:
+      - name: infer-task
+        template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: "{{workflow.parameters.model}}"

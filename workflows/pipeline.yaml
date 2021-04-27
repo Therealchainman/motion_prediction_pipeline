@@ -1,0 +1,138 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: pipeline
+spec:
+  entrypoint: graph
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: pvc-data
+  templates:
+  - name: graph
+    dag:
+      tasks:
+      - name: clone-repo
+        templateRef: 
+          name: clone-repo
+          template: clone-repo
+        arguments: 
+          parameters: [{name: email, value: toddey65@gmail.com}, {name: user, value: therealchainman}]
+      - name: preprocess
+        templateRef:
+          name: preprocess
+          template: preprocess
+        dependencies: [clone-repo]
+      - name: build-model-logistic-regression
+        templateRef:
+          name: build-model
+          template: build-model
+        arguments:
+          parameters:
+          - name: model
+            value: LR
+        dependencies: [preprocess]
+      - name: infer-logistic-regression
+        templateRef:
+          name: infer
+          template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: LR
+        dependencies: [build-model-logistic-regression]
+      - name: build-model-decision-tree
+        templateRef:
+          name: build-model
+          template: build-model
+        arguments:
+          parameters:
+          - name: model
+            value: CART
+        dependencies: [preprocess]
+      - name: infer-decision-tree
+        templateRef:
+          name: infer
+          template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: CART
+        dependencies: [build-model-decision-tree]
+      - name: build-model-sequential-softplus
+        templateRef:
+          name: build-model
+          template: build-model
+        arguments:
+          parameters:
+          - name: model
+            value: nn-softplus
+        dependencies: [preprocess]
+      - name: infer-sequential-softplus
+        templateRef:
+          name: infer
+          template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: nn-softplus
+        dependencies: [build-model-sequential-softplus]
+      - name: build-model-sequential-selu
+        templateRef:
+          name: build-model
+          template: build-model
+        arguments:
+          parameters:
+          - name: model
+            value: nn-selu
+        dependencies: [preprocess]
+      - name: infer-sequential-selu
+        templateRef:
+          name: infer
+          template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: nn-selu
+        dependencies: [build-model-sequential-selu]
+      - name: build-model-sequential-multilayer
+        templateRef:
+          name: build-model
+          template: build-model
+        arguments:
+          parameters:
+          - name: model
+            value: nn-multilayer-softmax-relu
+        dependencies: [preprocess]
+      - name: infer-sequential-multilayer
+        templateRef:
+          name: infer
+          template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: nn-multilayer-softmax-relu
+        dependencies: [build-model-sequential-multilayer]
+      - name: build-model-sequential-relu
+        templateRef:
+          name: build-model
+          template: build-model
+        arguments:
+          parameters:
+          - name: model
+            value: nn-relu
+        dependencies: [preprocess]
+      - name: infer-logistic-sequential-relu
+        templateRef:
+          name: infer
+          template: infer
+        arguments:
+          parameters:
+          - name: model
+            value: nn-relu
+        dependencies: [build-model-sequential-relu]
+      - name: push-repo-task
+        templateRef:
+          name: push-repo
+          template: push-repo
+        dependencies: [infer-logistic-sequential-relu, infer-sequential-multilayer, infer-sequential-selu, infer-sequential-softplus, infer-decision-tree, infer-logistic-regression]

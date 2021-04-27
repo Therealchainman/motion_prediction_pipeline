@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: preprocess
+spec:
+  entrypoint: predag
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: pvc-data
+  templates:
+  - name: preprocess
+    container:
+      image: toddchaney/car_insurance_preprocess
+      command: [python]
+      args: ["run.py"]
+      volumeMounts:
+      - mountPath: /data
+        name: workspace
+  - name: predag
+    dag:
+      tasks:
+      - name: preprocess
+        template: preprocess
