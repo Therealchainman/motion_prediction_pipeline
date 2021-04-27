@@ -1,4 +1,4 @@
-FROM toddchaney/car_insurance_base:latest
+FROM toddchaney/motion_prediction_base:latest
 
 COPY run.sh /
 

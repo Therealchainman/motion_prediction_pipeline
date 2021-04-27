@@ -23,27 +23,7 @@ Then I will know what I'm doing on my second installation
 
 \\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes
 
-
-## creating the hostPath volume
-
-The architecture of this I drew out, but this is what it looks like, 
-I need to create the persistentvolume, persistentvolumeclaim, and create the hostpath by ssh into my single node, which is just going to be 
-
-```sh
-minikube ssh
-```
-
-But I don't need to do that, I don't need to create the directory, it will if it doesn't exist.  
-
-I created a very basic pv and pvc for the cluster to have the /data as a hostPath. This will allow me to persist files in my cluster so I can work from a pod and continue the work from the pod
-later on.  
-
-Of course if this node crashes for some reason I will lose all my data, I need to consider this as a problem.  But for now I'm
-fine, and in fact the only real trouble for me is actually trying to save it to a github repo potentially periodically yeah that would be nice.  Fortunately all of the images are built atop of python3.7 which contains git installed.  So I can manually run jupyterlab and do all the git commands in my single node.  
-
-TODO:  Add github action workflow to push the information to there from the /data file in the node.  
-
-create a jupyterlab deployment and service, the reason for the deployment is it will create a pod that will continually be running that has the jupyter lab inside of the pod.  All I need to do is exec into the pod and I can see that jupyter is running or run the logs and see that jupyterlab is running.  The thing is it will say it cannot find a browser.  That is because it is not exposed to my localhost.  So I portforward from the pod to my laptop.  So that now I can actually see web app in my browser locally.  However, while this does sound very nice and all.  It still leaves some very gigantic holes to be covered.  For instance, one of the problems or issues is that i lost my train of thought.  Regardless boom I have this jupyter labs where the pod is connected to hostpath, so it should be able to see the data that I plop into that local hostpath, now all I need is the following.  I need the ability to be able to yeah and I can run from jupyter lab and everything, not sure if it will actually be connected though.  But this is definitely worth a shot.  The other thing that can be tried is the following though.  I can also try something else.  Regardless you see the general concept.  I don't know if this will work.  also I'm basically just running the code in the jupyter lab pod.  I mean why do I even need my pipeline with argo.  IDK, maybe so I can run code and isolate certain areas, for when it breaks there.  I guess. I don't know how necessary Argo will be, but having jupyter will be nice, and it is nice that I can attach anything in Argo to the volumes.  
+9.foom I have this jupyter labs where the pod is connected to hostpath, so it should be able to see the data that I plop into that local hostpath, now all I need is the following.  I need the ability to be able to yeah and I can run from jupyter lab and everything, not sure if it will actually be connected though.  But this is definitely worth a shot.  The other thing that can be tried is the following though.  I can also try something else.  Regardless you see the general concept.  I don't know if this will work.  also I'm basically just running the code in the jupyter lab pod.  I mean why do I even need my pipeline with argo.  IDK, maybe so I can run code and isolate certain areas, for when it breaks there.  I guess. I don't know how necessary Argo will be, but having jupyter will be nice, and it is nice that I can attach anything in Argo to the volumes.  
 
 Investigate this link to create deployments later
 
@@ -57,6 +37,21 @@ but ofcourse if it fails anywhere I just have to rerun the entire workflow.  Oh 
 
 The other thing I'm working on is the following 
 
+I still need to create a better method for connecting to an outside dataset.  
+
+[Important information about persisting volumes in minikube](<https://v1-18.docs.kubernetes.io/docs/setup/learning-environment/minikube/#mounted-host-folders>)
+
+One thing to note is that you need a specific name for the host directory for it to persist across minikube stop.  for instance `/data` is fine for starters.
+
+Look at mounted host folders, this is what I want to do.  
+
+The solution that I was able to implement was the following 
+
+Create a minikube container with docker as vm with setting storage provisioner v=4, and mount the data
+
+```sh
+minikube start "motion_prediction" --v=4 --mount --mount-string="/mnt/d/Fall_2020/motion_prediction_for_AV:/datasets/"
+```
 
 ## Setting up the MLFlow in here
 
@@ -266,7 +261,7 @@ spec:
     inputs:
       parameters: [{name: email}, {name: user}]
     container: 
-      image: toddchaney/car_insurance_clone_repo
+      image: toddchaney/motion_prediction_clone_repo
         env: 
         - name: EMAIL
           value: "{{inputs.parameters.email}}"
@@ -306,4 +301,31 @@ RUN ssh -Tv git@github.com
 add your known host as well from .ssh and you should be set now. 
 
 
+## Planning
+
+99 frames of objects moving around, Asked to predict location in next 50
+
+Only need train.zarr and test.zarr
+
+## What hapens when recreate minikube container
+
+If it recreates the minikube container, but the image still remains it appears you still have the original state of the kubernetes node.
+
+```sh
+kubectl describe nodes
+```
+
+## set up for this data ingestion
+
+part of setup was mounting the dataset because it is 22 gbs and I don't want to download that, also I'd have to increase the 10gb 
+for the default size of a docker container. 
+
+easy to set up just rename the previous to the name of this directory you want to store the data. 
+
+create the pvc and pv yaml files for the pv datasets and run the kubectl command
+
+Do that for all 4 of the persistent volumes
+```sh
+kubectl apply -f pv-data.yaml -n argo 
+```
 

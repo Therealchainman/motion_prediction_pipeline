@@ -20,7 +20,7 @@ spec:
             claimName: pvc-data
       containers:
       - name: minimal-notebook
-        image: toddchaney/car_insurance_notebooks
+        image: toddchaney/motion_prediction_notebooks
         volumeMounts:
           - name: data-storage
             mountPath: "/data"

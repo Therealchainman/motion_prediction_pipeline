@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /data/projects/car-insurance-ssh
+cd /data/projects/motion_prediction
 git add .
 git commit -m "submitted workflow"
 git push

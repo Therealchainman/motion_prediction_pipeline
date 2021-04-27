@@ -2,7 +2,7 @@ SHELL := /bin/bash
 VERSION?=latest
 TASK_IMAGES:=$(shell find tasks -name Dockerfile -printf '%h ')
 REGISTRY=toddchaney
-PROJECT=car_insurance
+PROJECT=motion_prediction
 ARGO_NAMESPACE=argo
 
 tasks/%: FORCE
@@ -20,7 +20,7 @@ run: images
 	argo template delete --all -n $(ARGO_NAMESPACE)
 
 start_notebooks:
-	kubectl apply -f $(HOME)/ml/car-insurance/notebooks.yaml -n $(ARGO_NAMESPACE)
+	kubectl apply -f $(HOME)/ml/motion_prediction_pipeline/notebooks.yaml -n $(ARGO_NAMESPACE)
 
 stop_notebooks:
 	kubectl delete deployment jupyter-notebook -n $(ARGO_NAMESPACE)

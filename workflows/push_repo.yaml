@@ -11,7 +11,7 @@ spec:
   templates:
   - name: push-repo
     container: 
-      image: toddchaney/car_insurance_push_repo
+      image: toddchaney/motion_prediction_push_repo
       command: [bash]
       args: ["/run.sh"]
       volumeMounts:

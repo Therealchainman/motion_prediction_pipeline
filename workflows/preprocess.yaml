@@ -11,7 +11,7 @@ spec:
   templates:
   - name: preprocess
     container:
-      image: toddchaney/car_insurance_preprocess
+      image: toddchaney/motion_prediction_preprocess
       command: [python]
       args: ["run.py"]
       volumeMounts:

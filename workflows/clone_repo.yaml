@@ -19,7 +19,7 @@ spec:
     inputs:
       parameters: [{name: email}, {name: user}]
     container: 
-      image: toddchaney/car_insurance_clone_repo
+      image: toddchaney/motion_prediction_clone_repo
       env: [{name: EMAIL, value: "{{inputs.parameters.email}}"}, {name: USER, value: "{{inputs.parameters.user}}"}]
       command: [bash]
       args: ["/run.sh"]

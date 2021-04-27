@@ -18,7 +18,7 @@ spec:
       parameters: 
       - name: model
     container:
-      image: toddchaney/car_insurance_build_model
+      image: toddchaney/motion_prediction_build_model
       command: [python]
       args: ["run.py", "{{inputs.parameters.model}}"]
       volumeMounts:

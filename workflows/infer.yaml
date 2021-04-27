@@ -18,7 +18,7 @@ spec:
       parameters:
       - name: model
     container: 
-      image: toddchaney/car_insurance_infer
+      image: toddchaney/motion_prediction_infer
       command: [python]
       args: ["run.py"]
       volumeMounts:

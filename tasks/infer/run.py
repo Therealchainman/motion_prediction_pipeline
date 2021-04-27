@@ -20,7 +20,7 @@ CART
 
 
 def savePredictionsv1(preds, file):
-    with open(f"/data/projects/car-insurance/data/{file}", "w") as csv_file:
+    with open(f"/data/projects/motion_prediction/data/{file}", "w") as csv_file:
         fieldnames = ["prediction"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -29,7 +29,7 @@ def savePredictionsv1(preds, file):
 
 
 def savePredictionsv2(preds, file, outcomes):
-    with open(f"/data/projects/car-insurance/data/{file}", "w") as csv_file:
+    with open(f"/data/projects/motion_prediction/data/{file}", "w") as csv_file:
         fieldnames = ["prediction"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -41,7 +41,7 @@ def savePredictionsv2(preds, file, outcomes):
 
 
 def savePredictionsv3(preds, file, outcomes, duration):
-    with open(f"/data/projects/car-insurance/data/{file}", "w") as csv_file:
+    with open(f"/data/projects/motion_prediction/data/{file}", "w") as csv_file:
         fieldnames = ["prediction"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -53,15 +53,15 @@ def savePredictionsv3(preds, file, outcomes, duration):
 
 
 def infer():
-    df_test = pd.read_csv('/data/projects/car-insurance/data/df_test.csv')
+    df_test = pd.read_csv('/data/projects/motion_prediction/data/df_test.csv')
     X_test = np.array(df_test)
     outcomes = [row['Outcome'] for _, row in df_test.iterrows()]
     durations = [row['duration'] for _, row in df_test.iterrows()]
     if name == 'LR' or name == 'CART':
         model = pickle.load(
-            open(f'/data/projects/car-insurance/data/{name}.sav', 'rb'))
+            open(f'/data/projects/motion_prediction/data/{name}.sav', 'rb'))
     else:
-        model = load_model(f'/data/projects/car-insurance/data/{name}.h5')
+        model = load_model(f'/data/projects/motion_prediction/data/{name}.h5')
     target = model.predict(X_test)
     savePredictionsv1(target, f'results_{name}1.csv')
     savePredictionsv2(target, f'results_{name}2.csv', outcomes)

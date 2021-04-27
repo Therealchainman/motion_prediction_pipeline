@@ -36,7 +36,7 @@ import pandas as pd
 #     print(f"Wrote data frame for paths (showing 10): {articles.head(10)['file'].tolist()}")
 
 def loadData(file):
-    return pd.read_csv(f"/data/projects/car-insurance/data/{file}")
+    return pd.read_csv(f"/data/projects/motion_prediction/data/{file}")
 
 
 def dropColumns(df):
@@ -75,7 +75,7 @@ def dataProcess(df):
 
 
 def saveDataFrame(df, file):
-    df.to_csv(f'/data/projects/car-insurance/data/{file}')
+    df.to_csv(f'/data/projects/motion_prediction/data/{file}')
 
 
 def createDataFrame(file):
@@ -94,7 +94,7 @@ def createDataFrame(file):
 
 
 if __name__ == '__main__':
-    if os.path.isfile('/data/projects/car-insurance/data/df_train.csv') and os.path.isfile('/data/projects/car-insurance/data/df_test.csv'):
+    if os.path.isfile('/data/projects/motion_prediction/data/df_train.csv') and os.path.isfile('/data/projects/motion_prediction/data/df_test.csv'):
         print("Skipping as the data frame file already exsists")
     else:
         createDataFrame('Train_data.csv')
