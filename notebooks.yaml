@@ -20,7 +20,7 @@ spec:
             claimName: pvc-data
         - name: datasets-storage
           persistentVolumeClaim:
-            claimName: pvc-dataset
+            claimName: pvc-datasets
       containers:
       - name: minimal-notebook
         image: toddchaney/motion_prediction_notebooks

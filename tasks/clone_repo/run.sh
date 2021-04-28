@@ -5,7 +5,7 @@ cd /data/projects
 if [ -d ./motion_prediction]; then
   cd motion_prediction
 
-  git pull origin main
+  git pull origin master
 else
   git clone git@github.com:Therealchainman/motion_prediction.git motion_prediction
   cd motion_prediction

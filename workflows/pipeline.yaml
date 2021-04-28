@@ -10,7 +10,7 @@ spec:
       claimName: pvc-data
   - name: datasets
     persistentVolumeClaim:
-      claimName: pvc-dataset
+      claimName: pvc-datasets
   templates:
   - name: graph
     dag:
