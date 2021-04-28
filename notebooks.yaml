@@ -18,12 +18,17 @@ spec:
         - name: data-storage
           persistentVolumeClaim: 
             claimName: pvc-data
+        - name: datasets-storage
+          persistentVolumeClaim:
+            claimName: pvc-dataset
       containers:
       - name: minimal-notebook
         image: toddchaney/motion_prediction_notebooks
         volumeMounts:
           - name: data-storage
             mountPath: "/data"
+          - name: datasets-storage
+            mountPath: "/datasets"
         ports:
         - containerPort: 8888
         command: ["/usr/local/bin/jupyter"]

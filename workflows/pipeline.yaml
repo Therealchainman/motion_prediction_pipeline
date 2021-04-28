@@ -8,6 +8,9 @@ spec:
   - name: workspace
     persistentVolumeClaim:
       claimName: pvc-data
+  - name: datasets
+    persistentVolumeClaim:
+      claimName: pvc-dataset
   templates:
   - name: graph
     dag:
