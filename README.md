@@ -331,3 +331,8 @@ kubectl apply -f pv-data.yaml -n argo
 Run the dockerfiles that are needed such as the notebooks and base,  
 Usually to start you will need to create base image before running the makefile.
 
+## Exploring
+
+The dataset includes tfw files, what are these??
+
+
